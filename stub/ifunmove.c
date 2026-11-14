@@ -164,10 +164,10 @@ begindopushaddresssprelative:
   t2 = t1 & 63;
   t3 = (t2 == Type_Fixnum) ? 1 : 0;
 
-g7983:
-  if (_trace) printf("g7983:\n");
+g7981:
+  if (_trace) printf("g7981:\n");
   if (t3 == 0)
-    goto g7980;
+    goto g7978;
   /* Here if argument TypeFixnum */
   arg1 = (arg1 * 8) + 8;
   /* Compute stack relative pointer */
@@ -187,15 +187,15 @@ g7983:
   iSP = iSP + 8;
   goto cachevalid;
 
-g7980:
-  if (_trace) printf("g7980:\n");
+g7978:
+  if (_trace) printf("g7978:\n");
   /* Here for all other cases */
   arg5 = 0;
   arg2 = 63;
   goto illegaloperand;
 
-g7979:
-  if (_trace) printf("g7979:\n");
+g7977:
+  if (_trace) printf("g7977:\n");
 
 /* end DoPushAddressSpRelative */
   /* End of Halfword operand from stack instruction - DoPushAddressSpRelative */

@@ -20,8 +20,8 @@ DoEphemeralpIM:
   /* sign extend the byte argument. */
   arg2 = arg2 << 56;
 
-g8083:
-  if (_trace) printf("g8083:\n");
+g8081:
+  if (_trace) printf("g8081:\n");
   /* Rest of sign extension */
   arg2 = (s64)arg2 >> 56;
   *(u32 *)&processor->immediate_arg = arg2;
@@ -249,17 +249,17 @@ begindoallocatelistblock:
   /* Strip CDR code */
   t5 = t5 & 63;
   if (t5 != 0)
-    goto g8084;
+    goto g8082;
   t4 = *(s32 *)&processor->lclength;
   t2 = (arg3 == t1) ? 1 : 0;
   /* Wrong area */
   if (t2 == 0)
-    goto g8085;
+    goto g8083;
   /* Effectively an unsigned 32-bit compare */
   t2 = t4 - arg1;
   /* Insufficient cache */
   if ((s64)t2 < 0)
-    goto g8085;
+    goto g8083;
   /* Fetch address */
   t1 = *(u64 *)&(processor->lcaddress);
   t3 = (-16384) << 16;
@@ -286,14 +286,14 @@ begindoallocatelistblock:
   *(u32 *)&processor->control = t4;
   goto NEXTINSTRUCTION;
 
-g8084:
-  if (_trace) printf("g8084:\n");
+g8082:
+  if (_trace) printf("g8082:\n");
   arg5 = 0;
   arg2 = 1;
   goto illegaloperand;
 
-g8085:
-  if (_trace) printf("g8085:\n");
+g8083:
+  if (_trace) printf("g8083:\n");
   /* SetTag. */
   t1 = arg2 << 32;
   t1 = arg1 | t1;
@@ -367,17 +367,17 @@ begindoallocatestructureblock:
   /* Strip CDR code */
   t5 = t5 & 63;
   if (t5 != 0)
-    goto g8086;
+    goto g8084;
   t4 = *(s32 *)&processor->sclength;
   t2 = (arg3 == t1) ? 1 : 0;
   /* Wrong area */
   if (t2 == 0)
-    goto g8087;
+    goto g8085;
   /* Effectively an unsigned 32-bit compare */
   t2 = t4 - arg1;
   /* Insufficient cache */
   if ((s64)t2 < 0)
-    goto g8087;
+    goto g8085;
   /* Fetch address */
   t1 = *(u64 *)&(processor->scaddress);
   t3 = (-16384) << 16;
@@ -404,14 +404,14 @@ begindoallocatestructureblock:
   *(u32 *)&processor->control = t4;
   goto NEXTINSTRUCTION;
 
-g8086:
-  if (_trace) printf("g8086:\n");
+g8084:
+  if (_trace) printf("g8084:\n");
   arg5 = 0;
   arg2 = 1;
   goto illegaloperand;
 
-g8087:
-  if (_trace) printf("g8087:\n");
+g8085:
+  if (_trace) printf("g8085:\n");
   /* SetTag. */
   t1 = arg2 << 32;
   t1 = arg1 | t1;
@@ -576,8 +576,8 @@ DoStoreConditionalIM:
   /* sign extend the byte argument. */
   arg2 = arg2 << 56;
 
-g8104:
-  if (_trace) printf("g8104:\n");
+g8102:
+  if (_trace) printf("g8102:\n");
   /* Rest of sign extension */
   arg2 = (s64)arg2 >> 56;
   *(u32 *)&processor->immediate_arg = arg2;
@@ -645,7 +645,7 @@ begindostoreconditional:
   /* Read the location, checking write access */
   /* Memory Read Internal */
 
-g8088:
+g8086:
   /* Base of stack cache */
   t1 = *(u64 *)&(processor->stackcachebasevma);
   t3 = arg6 + ivory;
@@ -659,17 +659,17 @@ g8088:
   t5 = *(s32 *)t5;
   t4 = (u8)(t4 >> ((t3&7)*8));
   if (t2 != 0)
-    goto g8090;
+    goto g8088;
 
-g8089:
+g8087:
   t1 = *(u64 *)&(processor->dataread_mask);
   t3 = zero + 240;
   t1 = t1 >> (t4 & 63);
   t3 = t3 >> (t4 & 63);
   if (t1 & 1)
-    goto g8092;
+    goto g8090;
 
-g8099:
+g8097:
   /* Check for data match - NOT */
   t1 = (s32)arg4 - (s32)t5;
   /* Zero if tags match */
@@ -701,16 +701,16 @@ g8099:
   t2 = (t4 & 0xff) << ((t1&7)*8);
   t3 = t3 & ~(0xffL << (t1&7)*8);
 
-g8102:
-  if (_trace) printf("g8102:\n");
+g8100:
+  if (_trace) printf("g8100:\n");
   t3 = t3 | t2;
   STQ_U(t1, t3);
   *(u32 *)t5 = arg1;
   /* J. if in cache */
   if (t6 != 0)
-    goto g8101;
+    goto g8099;
 
-g8100:
+g8098:
   iPC = *(u64 *)&(((CACHELINEP)iCP)->nextpcdata);
   iCP = *(u64 *)&(((CACHELINEP)iCP)->nextcp);
   t6 = *(u64 *)&(processor->taddress);
@@ -735,12 +735,12 @@ storecondiop:
   arg2 = 65;
   goto illegaloperand;
 
-g8101:
-  if (_trace) printf("g8101:\n");
+g8099:
+  if (_trace) printf("g8099:\n");
   t2 = *(u64 *)&(processor->stackcachebasevma);
 
-g8103:
-  if (_trace) printf("g8103:\n");
+g8101:
+  if (_trace) printf("g8101:\n");
   t1 = *(u64 *)&(processor->stackcachedata);
   /* Stack cache offset */
   t2 = arg6 - t2;
@@ -750,28 +750,28 @@ g8103:
   *(u32 *)t1 = arg1;
   /* write the stack cache */
   *(u32 *)(t1 + 4) = t4;
-  goto g8100;
+  goto g8098;
 
-g8090:
-  if (_trace) printf("g8090:\n");
+g8088:
+  if (_trace) printf("g8088:\n");
   t2 = *(u64 *)&(processor->stackcachedata);
   /* reconstruct SCA */
   t1 = (t1 * 8) + t2;
   t5 = *(s32 *)t1;
   /* Read from stack cache */
   t4 = *(s32 *)(t1 + 4);
-  goto g8089;
+  goto g8087;
 
-g8092:
-  if (_trace) printf("g8092:\n");
+g8090:
+  if (_trace) printf("g8090:\n");
   if ((t3 & 1) == 0)
-    goto g8091;
+    goto g8089;
   /* Do the indirect thing */
   arg6 = (u32)t5;
-  goto g8088;
+  goto g8086;
 
-g8091:
-  if (_trace) printf("g8091:\n");
+g8089:
+  if (_trace) printf("g8089:\n");
   /* Load the memory action table for cycle */
   t1 = *(u64 *)&(processor->dataread);
   /* TagType. */
@@ -784,26 +784,26 @@ g8091:
   /* Get the memory action */
   t1 = *(s32 *)t3;
 
-g8096:
-  if (_trace) printf("g8096:\n");
+g8094:
+  if (_trace) printf("g8094:\n");
   t3 = t1 & MemoryActionTransform;
   if (t3 == 0)
-    goto g8095;
+    goto g8093;
   t4 = t4 & ~63L;
   t4 = t4 | Type_ExternalValueCellPointer;
-  goto g8099;
+  goto g8097;
 #ifndef MINIMA
 
-g8095:
+g8093:
 #endif
 #ifdef MINIMA
 
-g8095:
-  if (_trace) printf("g8095:\n");
+g8093:
+  if (_trace) printf("g8093:\n");
   t3 = t1 & MemoryActionBinding;
   t2 = *(u64 *)&(processor->dbcmask);
   if (t3 == 0)
-    goto g8094;
+    goto g8092;
   t1 = arg6 << 1;
   t3 = *(u64 *)&(processor->dbcbase);
   /* Hash index */
@@ -822,17 +822,17 @@ g8095:
   t3 = (s32)arg6 - (s32)t1;
   /* Trap on miss */
   if (t3 != 0)
-    goto g8098;
+    goto g8096;
   /* Extract the pointer, and indirect */
   arg6 = (u32)t5;
-  goto g8088;
+  goto g8086;
 
-g8098:
-  if (_trace) printf("g8098:\n");
+g8096:
+  if (_trace) printf("g8096:\n");
   goto dbcachemisstrap;
 #endif
 
-g8094:
+g8092:
   /* Perform memory action */
   arg1 = t1;
   arg2 = 0;
@@ -856,8 +856,8 @@ DoMemoryWriteIM:
   /* sign extend the byte argument. */
   arg2 = arg2 << 56;
 
-g8108:
-  if (_trace) printf("g8108:\n");
+g8106:
+  if (_trace) printf("g8106:\n");
   /* Rest of sign extension */
   arg2 = (s64)arg2 >> 56;
   *(u32 *)&processor->immediate_arg = arg2;
@@ -918,23 +918,23 @@ begindomemorywrite:
   t2 = (arg2 & 0xff) << ((t1&7)*8);
   t3 = t3 & ~(0xffL << (t1&7)*8);
 
-g8106:
-  if (_trace) printf("g8106:\n");
+g8104:
+  if (_trace) printf("g8104:\n");
   t3 = t3 | t2;
   STQ_U(t1, t3);
   *(u32 *)t4 = arg1;
   /* J. if in cache */
   if (t5 != 0)
-    goto g8105;
+    goto g8103;
   goto NEXTINSTRUCTION;
   goto NEXTINSTRUCTION;
+
+g8103:
+  if (_trace) printf("g8103:\n");
+  t2 = *(u64 *)&(processor->stackcachebasevma);
 
 g8105:
   if (_trace) printf("g8105:\n");
-  t2 = *(u64 *)&(processor->stackcachebasevma);
-
-g8107:
-  if (_trace) printf("g8107:\n");
   t1 = *(u64 *)&(processor->stackcachedata);
   /* Stack cache offset */
   t2 = arg4 - t2;
@@ -964,8 +964,8 @@ DoPStoreContentsIM:
   /* sign extend the byte argument. */
   arg2 = arg2 << 56;
 
-g8121:
-  if (_trace) printf("g8121:\n");
+g8119:
+  if (_trace) printf("g8119:\n");
   /* Rest of sign extension */
   arg2 = (s64)arg2 >> 56;
   *(u32 *)&processor->immediate_arg = arg2;
@@ -1018,7 +1018,7 @@ begindopstorecontents:
   arg1 = (u32)arg1;
   /* Memory Read Internal */
 
-g8109:
+g8107:
   /* Base of stack cache */
   t6 = *(u64 *)&(processor->stackcachebasevma);
   t8 = arg4 + ivory;
@@ -1032,11 +1032,11 @@ g8109:
   t5 = *(s32 *)t5;
   t4 = (u8)(t4 >> ((t8&7)*8));
   if (t7 != 0)
-    goto g8111;
+    goto g8109;
 
-g8110:
+g8108:
 
-g8117:
+g8115:
   /* Merge cdr-code */
   t5 = arg2 & 63;
   t4 = t4 & 192;
@@ -1053,23 +1053,23 @@ g8117:
   t7 = (t4 & 0xff) << ((t6&7)*8);
   t8 = t8 & ~(0xffL << (t6&7)*8);
 
-g8119:
-  if (_trace) printf("g8119:\n");
+g8117:
+  if (_trace) printf("g8117:\n");
   t8 = t8 | t7;
   STQ_U(t6, t8);
   *(u32 *)t5 = arg1;
   /* J. if in cache */
   if (t9 != 0)
-    goto g8118;
+    goto g8116;
   goto NEXTINSTRUCTION;
   goto NEXTINSTRUCTION;
+
+g8116:
+  if (_trace) printf("g8116:\n");
+  t7 = *(u64 *)&(processor->stackcachebasevma);
 
 g8118:
   if (_trace) printf("g8118:\n");
-  t7 = *(u64 *)&(processor->stackcachebasevma);
-
-g8120:
-  if (_trace) printf("g8120:\n");
   t6 = *(u64 *)&(processor->stackcachedata);
   /* Stack cache offset */
   t7 = arg4 - t7;
@@ -1081,15 +1081,15 @@ g8120:
   *(u32 *)(t6 + 4) = t4;
   goto NEXTINSTRUCTION;
 
-g8111:
-  if (_trace) printf("g8111:\n");
+g8109:
+  if (_trace) printf("g8109:\n");
   t7 = *(u64 *)&(processor->stackcachedata);
   /* reconstruct SCA */
   t6 = (t6 * 8) + t7;
   t5 = *(s32 *)t6;
   /* Read from stack cache */
   t4 = *(s32 *)(t6 + 4);
-  goto g8110;
+  goto g8108;
 
 /* end DoPStoreContents */
   /* End of Halfword operand from stack instruction - DoPStoreContents */
@@ -1414,8 +1414,8 @@ DoAluIM:
   /* sign extend the byte argument. */
   arg2 = arg2 << 56;
 
-g8192:
-  if (_trace) printf("g8192:\n");
+g8190:
+  if (_trace) printf("g8190:\n");
   /* Rest of sign extension */
   arg2 = (s64)arg2 >> 56;
   *(u32 *)&processor->immediate_arg = arg2;
@@ -1480,215 +1480,215 @@ begindoalu:
   arg6 = *(u64 *)&(processor->aluandrotatecontrol);
   t1 = (arg5 == ALUFunction_Boolean) ? 1 : 0;
 
-g8182:
-  if (_trace) printf("g8182:\n");
+g8180:
+  if (_trace) printf("g8180:\n");
   if (t1 == 0)
-    goto g8123;
+    goto g8121;
   /* Here if argument ALUFunctionBoolean */
   t10 = arg6 >> 10;
   /* Extract the ALU boolean function */
   t10 = t10 & 15;
   t1 = (t10 == Boole_Clear) ? 1 : 0;
 
+g8140:
+  if (_trace) printf("g8140:\n");
+  if (t1 != 0)
+    goto g8122;
+
+g8123:
+  if (_trace) printf("g8123:\n");
+  t1 = (t10 == Boole_And) ? 1 : 0;
+
+g8141:
+  if (_trace) printf("g8141:\n");
+  if (t1 == 0)
+    goto g8124;
+  /* Here if argument BooleAnd */
+  t10 = arg4 & arg1;
+  goto g8122;
+
+g8124:
+  if (_trace) printf("g8124:\n");
+  t1 = (t10 == Boole_AndC1) ? 1 : 0;
+
 g8142:
   if (_trace) printf("g8142:\n");
-  if (t1 != 0)
-    goto g8124;
+  if (t1 == 0)
+    goto g8125;
+  /* Here if argument BooleAndC1 */
+  t10 = arg1 & ~arg4;
+  goto g8122;
 
 g8125:
   if (_trace) printf("g8125:\n");
-  t1 = (t10 == Boole_And) ? 1 : 0;
+  t1 = (t10 == Boole_2) ? 1 : 0;
 
 g8143:
   if (_trace) printf("g8143:\n");
   if (t1 == 0)
     goto g8126;
-  /* Here if argument BooleAnd */
-  t10 = arg4 & arg1;
-  goto g8124;
+  /* Here if argument Boole2 */
+  t10 = arg1;
+  goto g8122;
 
 g8126:
   if (_trace) printf("g8126:\n");
-  t1 = (t10 == Boole_AndC1) ? 1 : 0;
+  t1 = (t10 == Boole_AndC2) ? 1 : 0;
 
 g8144:
   if (_trace) printf("g8144:\n");
   if (t1 == 0)
     goto g8127;
-  /* Here if argument BooleAndC1 */
-  t10 = arg1 & ~arg4;
-  goto g8124;
+  /* Here if argument BooleAndC2 */
+  t10 = arg4 & ~arg1;
+  goto g8122;
 
 g8127:
   if (_trace) printf("g8127:\n");
-  t1 = (t10 == Boole_2) ? 1 : 0;
+  t1 = (t10 == Boole_1) ? 1 : 0;
 
 g8145:
   if (_trace) printf("g8145:\n");
   if (t1 == 0)
     goto g8128;
-  /* Here if argument Boole2 */
-  t10 = arg1;
-  goto g8124;
+  /* Here if argument Boole1 */
+  t10 = arg4;
+  goto g8122;
 
 g8128:
   if (_trace) printf("g8128:\n");
-  t1 = (t10 == Boole_AndC2) ? 1 : 0;
+  t1 = (t10 == Boole_Xor) ? 1 : 0;
 
 g8146:
   if (_trace) printf("g8146:\n");
   if (t1 == 0)
     goto g8129;
-  /* Here if argument BooleAndC2 */
-  t10 = arg4 & ~arg1;
-  goto g8124;
+  /* Here if argument BooleXor */
+  t10 = arg4 ^ arg1;
+  goto g8122;
 
 g8129:
   if (_trace) printf("g8129:\n");
-  t1 = (t10 == Boole_1) ? 1 : 0;
+  t1 = (t10 == Boole_Ior) ? 1 : 0;
 
 g8147:
   if (_trace) printf("g8147:\n");
   if (t1 == 0)
     goto g8130;
-  /* Here if argument Boole1 */
-  t10 = arg4;
-  goto g8124;
+  /* Here if argument BooleIor */
+  t10 = arg4 | arg1;
+  goto g8122;
 
 g8130:
   if (_trace) printf("g8130:\n");
-  t1 = (t10 == Boole_Xor) ? 1 : 0;
+  t1 = (t10 == Boole_Nor) ? 1 : 0;
 
 g8148:
   if (_trace) printf("g8148:\n");
   if (t1 == 0)
     goto g8131;
-  /* Here if argument BooleXor */
-  t10 = arg4 ^ arg1;
-  goto g8124;
+  /* Here if argument BooleNor */
+  t10 = arg4 | arg1;
+  t10 = ~t10;
+  goto g8122;
 
 g8131:
   if (_trace) printf("g8131:\n");
-  t1 = (t10 == Boole_Ior) ? 1 : 0;
+  t1 = (t10 == Boole_Equiv) ? 1 : 0;
 
 g8149:
   if (_trace) printf("g8149:\n");
   if (t1 == 0)
     goto g8132;
-  /* Here if argument BooleIor */
-  t10 = arg4 | arg1;
-  goto g8124;
+  /* Here if argument BooleEquiv */
+  t10 = arg4 ^ arg1;
+  t10 = ~t10;
+  goto g8122;
 
 g8132:
   if (_trace) printf("g8132:\n");
-  t1 = (t10 == Boole_Nor) ? 1 : 0;
+  t1 = (t10 == Boole_C1) ? 1 : 0;
 
 g8150:
   if (_trace) printf("g8150:\n");
   if (t1 == 0)
     goto g8133;
-  /* Here if argument BooleNor */
-  t10 = arg4 | arg1;
-  t10 = ~t10;
-  goto g8124;
+  /* Here if argument BooleC1 */
+  t10 = ~arg4;
+  goto g8122;
 
 g8133:
   if (_trace) printf("g8133:\n");
-  t1 = (t10 == Boole_Equiv) ? 1 : 0;
+  t1 = (t10 == Boole_OrC1) ? 1 : 0;
 
 g8151:
   if (_trace) printf("g8151:\n");
   if (t1 == 0)
     goto g8134;
-  /* Here if argument BooleEquiv */
-  t10 = arg4 ^ arg1;
-  t10 = ~t10;
-  goto g8124;
+  /* Here if argument BooleOrC1 */
+  t10 = arg1 | ~(arg4);
+  goto g8122;
 
 g8134:
   if (_trace) printf("g8134:\n");
-  t1 = (t10 == Boole_C1) ? 1 : 0;
+  t1 = (t10 == Boole_C2) ? 1 : 0;
 
 g8152:
   if (_trace) printf("g8152:\n");
   if (t1 == 0)
     goto g8135;
-  /* Here if argument BooleC1 */
-  t10 = ~arg4;
-  goto g8124;
+  /* Here if argument BooleC2 */
+  t10 = ~arg1;
+  goto g8122;
 
 g8135:
   if (_trace) printf("g8135:\n");
-  t1 = (t10 == Boole_OrC1) ? 1 : 0;
+  t1 = (t10 == Boole_OrC2) ? 1 : 0;
 
 g8153:
   if (_trace) printf("g8153:\n");
   if (t1 == 0)
     goto g8136;
-  /* Here if argument BooleOrC1 */
-  t10 = arg1 | ~(arg4);
-  goto g8124;
+  /* Here if argument BooleOrC2 */
+  t10 = arg4 & ~arg1;
+  goto g8122;
 
 g8136:
   if (_trace) printf("g8136:\n");
-  t1 = (t10 == Boole_C2) ? 1 : 0;
+  t1 = (t10 == Boole_Nand) ? 1 : 0;
 
 g8154:
   if (_trace) printf("g8154:\n");
   if (t1 == 0)
     goto g8137;
-  /* Here if argument BooleC2 */
-  t10 = ~arg1;
-  goto g8124;
+  /* Here if argument BooleNand */
+  t10 = arg4 & arg1;
+  goto g8122;
 
 g8137:
   if (_trace) printf("g8137:\n");
-  t1 = (t10 == Boole_OrC2) ? 1 : 0;
+  t1 = (t10 == Boole_Set) ? 1 : 0;
 
 g8155:
   if (_trace) printf("g8155:\n");
   if (t1 == 0)
-    goto g8138;
-  /* Here if argument BooleOrC2 */
-  t10 = arg4 & ~arg1;
-  goto g8124;
-
-g8138:
-  if (_trace) printf("g8138:\n");
-  t1 = (t10 == Boole_Nand) ? 1 : 0;
-
-g8156:
-  if (_trace) printf("g8156:\n");
-  if (t1 == 0)
-    goto g8139;
-  /* Here if argument BooleNand */
-  t10 = arg4 & arg1;
-  goto g8124;
-
-g8139:
-  if (_trace) printf("g8139:\n");
-  t1 = (t10 == Boole_Set) ? 1 : 0;
-
-g8157:
-  if (_trace) printf("g8157:\n");
-  if (t1 == 0)
-    goto g8124;
+    goto g8122;
   /* Here if argument BooleSet */
   t10 = ~zero;
 
-g8124:
-  if (_trace) printf("g8124:\n");
+g8122:
+  if (_trace) printf("g8122:\n");
   *(u32 *)iSP = t10;
   goto NEXTINSTRUCTION;
 
-g8123:
-  if (_trace) printf("g8123:\n");
+g8121:
+  if (_trace) printf("g8121:\n");
   t1 = (arg5 == ALUFunction_Byte) ? 1 : 0;
 
-g8183:
-  if (_trace) printf("g8183:\n");
+g8181:
+  if (_trace) printf("g8181:\n");
   if (t1 == 0)
-    goto g8158;
+    goto g8156;
   /* Here if argument ALUFunctionByte */
   /* Get rotate */
   t2 = *(u64 *)&(processor->byterotate);
@@ -1700,15 +1700,15 @@ g8183:
   t1 = t1 & 3;
   t4 = (t1 == ALUByteBackground_Op1) ? 1 : 0;
 
-g8165:
-  if (_trace) printf("g8165:\n");
+g8163:
+  if (_trace) printf("g8163:\n");
   if (t4 == 0)
-    goto g8161;
+    goto g8159;
   /* Here if argument ALUByteBackgroundOp1 */
   t1 = arg4;
 
-g8160:
-  if (_trace) printf("g8160:\n");
+g8158:
+  if (_trace) printf("g8158:\n");
   t5 = arg6 >> 12;
   /* Extractthe byte rotate latch */
   t5 = t5 & 1;
@@ -1719,11 +1719,11 @@ g8160:
   t10 = t10 | t4;
   /* Don't update rotate latch if not requested */
   if (t5 == 0)
-    goto g8159;
+    goto g8157;
   *(u64 *)&processor->rotatelatch = t10;
 
-g8159:
-  if (_trace) printf("g8159:\n");
+g8157:
+  if (_trace) printf("g8157:\n");
   t5 = zero + -2;
   t5 = t5 << (t3 & 63);
   /* Compute mask */
@@ -1733,16 +1733,16 @@ g8159:
   t4 = t4 & 1;
   t3 = (t4 == ALUByteFunction_Dpb) ? 1 : 0;
 
-g8170:
-  if (_trace) printf("g8170:\n");
+g8168:
+  if (_trace) printf("g8168:\n");
   if (t3 == 0)
-    goto g8167;
+    goto g8165;
   /* Here if argument ALUByteFunctionDpb */
   /* Position mask */
   t5 = t5 << (t2 & 63);
 
-g8166:
-  if (_trace) printf("g8166:\n");
+g8164:
+  if (_trace) printf("g8164:\n");
   /* rotated&mask */
   t10 = t10 & t5;
   /* background&~mask */
@@ -1751,14 +1751,14 @@ g8166:
   *(u32 *)iSP = t10;
   goto NEXTINSTRUCTION;
 
-g8158:
-  if (_trace) printf("g8158:\n");
+g8156:
+  if (_trace) printf("g8156:\n");
   t1 = (arg5 == ALUFunction_Adder) ? 1 : 0;
 
-g8184:
-  if (_trace) printf("g8184:\n");
+g8182:
+  if (_trace) printf("g8182:\n");
   if (t1 == 0)
-    goto g8171;
+    goto g8169;
   /* Here if argument ALUFunctionAdder */
   t3 = arg6 >> 11;
   /* Extract the op2 */
@@ -1768,15 +1768,15 @@ g8184:
   t2 = t2 & 1;
   t4 = (t3 == ALUAdderOp2_Op2) ? 1 : 0;
 
-g8179:
-  if (_trace) printf("g8179:\n");
+g8177:
+  if (_trace) printf("g8177:\n");
   if (t4 == 0)
-    goto g8174;
+    goto g8172;
   /* Here if argument ALUAdderOp2Op2 */
   t1 = arg1;
 
-g8173:
-  if (_trace) printf("g8173:\n");
+g8171:
+  if (_trace) printf("g8171:\n");
   t10 = arg4 + t1;
   t10 = t10 + t2;
   /* Sign bit */
@@ -1789,7 +1789,7 @@ g8173:
   t4 = arg6 >> 24;
   *(u64 *)&processor->aluoverflow = t3;
   if ((t4 & 1) == 0)
-    goto g8172;
+    goto g8170;
   /* Get the carry */
   t3 = (u32)(t10 >> ((4&7)*8));
   t4 = zero + 1024;
@@ -1800,8 +1800,8 @@ g8173:
   arg6 = arg6 | t4;
   *(u64 *)&processor->aluandrotatecontrol = arg6;
 
-g8172:
-  if (_trace) printf("g8172:\n");
+g8170:
+  if (_trace) printf("g8170:\n");
   t3 = ((s64)arg4 < (s64)t1) ? 1 : 0;
   *(u64 *)&processor->aluborrow = t3;
   arg4 = (s32)arg4;
@@ -1811,14 +1811,14 @@ g8172:
   *(u32 *)iSP = t10;
   goto NEXTINSTRUCTION;
 
-g8171:
-  if (_trace) printf("g8171:\n");
+g8169:
+  if (_trace) printf("g8169:\n");
   t1 = (arg5 == ALUFunction_MultiplyDivide) ? 1 : 0;
 
-g8185:
-  if (_trace) printf("g8185:\n");
+g8183:
+  if (_trace) printf("g8183:\n");
   if (t1 == 0)
-    goto g8122;
+    goto g8120;
   /* Here if argument ALUFunctionMultiplyDivide */
   /* This instruction has not been written yet. */
   arg5 = 0;
@@ -1827,8 +1827,8 @@ g8185:
   *(u32 *)iSP = t10;
   goto NEXTINSTRUCTION;
 
-g8122:
-  if (_trace) printf("g8122:\n");
+g8120:
+  if (_trace) printf("g8120:\n");
 
 aluexc:
   if (_trace) printf("aluexc:\n");
@@ -1836,78 +1836,78 @@ aluexc:
   arg2 = 80;
   goto illegaloperand;
 
-g8174:
-  if (_trace) printf("g8174:\n");
+g8172:
+  if (_trace) printf("g8172:\n");
   t4 = (t3 == ALUAdderOp2_Zero) ? 1 : 0;
 
-g8186:
-  if (_trace) printf("g8186:\n");
+g8184:
+  if (_trace) printf("g8184:\n");
   if (t4 == 0)
-    goto g8175;
+    goto g8173;
   /* Here if argument ALUAdderOp2Zero */
   t1 = zero;
-  goto g8173;
+  goto g8171;
 
-g8175:
-  if (_trace) printf("g8175:\n");
+g8173:
+  if (_trace) printf("g8173:\n");
   t4 = (t3 == ALUAdderOp2_Invert) ? 1 : 0;
 
-g8187:
-  if (_trace) printf("g8187:\n");
+g8185:
+  if (_trace) printf("g8185:\n");
   if (t4 == 0)
-    goto g8176;
+    goto g8174;
   /* Here if argument ALUAdderOp2Invert */
   t1 = (s32)arg1;
   t1 = zero - t1;
   t1 = (u32)t1;
-  goto g8173;
+  goto g8171;
 
-g8176:
-  if (_trace) printf("g8176:\n");
+g8174:
+  if (_trace) printf("g8174:\n");
   t4 = (t3 == ALUAdderOp2_MinusOne) ? 1 : 0;
+
+g8186:
+  if (_trace) printf("g8186:\n");
+  if (t4 == 0)
+    goto g8171;
+  /* Here if argument ALUAdderOp2MinusOne */
+  t1 = ~zero;
+  t1 = (u32)t1;
+  goto g8171;
+
+g8165:
+  if (_trace) printf("g8165:\n");
+  t3 = (t4 == ALUByteFunction_Ldb) ? 1 : 0;
+
+g8187:
+  if (_trace) printf("g8187:\n");
+  if (t3 != 0)
+    goto g8164;
+  goto g8164;
+
+g8159:
+  if (_trace) printf("g8159:\n");
+  t4 = (t1 == ALUByteBackground_RotateLatch) ? 1 : 0;
 
 g8188:
   if (_trace) printf("g8188:\n");
   if (t4 == 0)
-    goto g8173;
-  /* Here if argument ALUAdderOp2MinusOne */
-  t1 = ~zero;
-  t1 = (u32)t1;
-  goto g8173;
+    goto g8160;
+  /* Here if argument ALUByteBackgroundRotateLatch */
+  t1 = *(u64 *)&(processor->rotatelatch);
+  goto g8158;
 
-g8167:
-  if (_trace) printf("g8167:\n");
-  t3 = (t4 == ALUByteFunction_Ldb) ? 1 : 0;
+g8160:
+  if (_trace) printf("g8160:\n");
+  t4 = (t1 == ALUByteBackground_Zero) ? 1 : 0;
 
 g8189:
   if (_trace) printf("g8189:\n");
-  if (t3 != 0)
-    goto g8166;
-  goto g8166;
-
-g8161:
-  if (_trace) printf("g8161:\n");
-  t4 = (t1 == ALUByteBackground_RotateLatch) ? 1 : 0;
-
-g8190:
-  if (_trace) printf("g8190:\n");
   if (t4 == 0)
-    goto g8162;
-  /* Here if argument ALUByteBackgroundRotateLatch */
-  t1 = *(u64 *)&(processor->rotatelatch);
-  goto g8160;
-
-g8162:
-  if (_trace) printf("g8162:\n");
-  t4 = (t1 == ALUByteBackground_Zero) ? 1 : 0;
-
-g8191:
-  if (_trace) printf("g8191:\n");
-  if (t4 == 0)
-    goto g8160;
+    goto g8158;
   /* Here if argument ALUByteBackgroundZero */
   t1 = zero;
-  goto g8160;
+  goto g8158;
 
 /* end DoAlu */
   /* End of Halfword operand from stack instruction - DoAlu */
@@ -3121,7 +3121,7 @@ DoCoprocessorWriteFP:
   t2 = zero + CoprocessorRegister_UnwindStackForRestartOrApply;
   t2 = arg1 - t2;
   if (t2 != 0)
-    goto g8194;
+    goto g8192;
   /* Here if argument CoprocessorRegisterUnwindStackForRestartOrApply */
   /* peek at new continuation to look at tag */
   t1 = *(s32 *)iSP;
@@ -3221,14 +3221,14 @@ DoCoprocessorWriteFP:
   iSP = iSP - 8;
   t1 = (u32)t1;
   *(u32 *)&processor->control = t1;
-  goto g8193;
+  goto g8191;
 
-g8194:
-  if (_trace) printf("g8194:\n");
+g8192:
+  if (_trace) printf("g8192:\n");
   t2 = zero + CoprocessorRegister_FlushIDCaches;
   t2 = arg1 - t2;
   if (t2 != 0)
-    goto g8195;
+    goto g8193;
   /* Here if argument CoprocessorRegisterFlushIDCaches */
   /* We're about to flush the instruction cache so we can't rely */
   /* on ContinueToNextInstruction working.  Instead, we must load */
@@ -3265,14 +3265,14 @@ g8194:
   iLP = *(u64 *)&(processor->lp);
   /* Compute proper iCP after FlushCaches resets it. */
   goto ICACHEMISS;
-  goto g8193;
+  goto g8191;
 
-g8195:
-  if (_trace) printf("g8195:\n");
+g8193:
+  if (_trace) printf("g8193:\n");
   t2 = zero + CoprocessorRegister_FlushCachesForVMA;
   t2 = arg1 - t2;
   if (t2 != 0)
-    goto g8196;
+    goto g8194;
   /* Here if argument CoprocessorRegisterFlushCachesForVMA */
   /* Extract the VMA */
   arg2 = (u32)arg2;
@@ -3309,14 +3309,14 @@ g8195:
 
 dcwnotincache:
   if (_trace) printf("dcwnotincache:\n");
-  goto g8193;
+  goto g8191;
 
-g8196:
-  if (_trace) printf("g8196:\n");
+g8194:
+  if (_trace) printf("g8194:\n");
   t2 = zero + CoprocessorRegister_FlushHiddenArrayRegisters;
   t2 = arg1 - t2;
   if (t2 != 0)
-    goto g8197;
+    goto g8195;
   /* Here if argument CoprocessorRegisterFlushHiddenArrayRegisters */
   /* Get the VMA of the new stack array */
   arg2 = (u32)arg2;
@@ -3336,10 +3336,10 @@ g8196:
 
 arraynotincache:
   if (_trace) printf("arraynotincache:\n");
-  goto g8193;
+  goto g8191;
 
-g8197:
-  if (_trace) printf("g8197:\n");
+g8195:
+  if (_trace) printf("g8195:\n");
   /* Here for all other cases */
   /* Standard coprocessor register processing */
   r0 = *(u64 *)&(processor->coprocessorwritehook);
@@ -3374,13 +3374,13 @@ g8197:
   /* J. if CoprocessorWrite exception return */
   if (r0 == 0)
     goto cpreadexc;
-  goto g8193;
+  goto g8191;
 
-g8198:
-  if (_trace) printf("g8198:\n");
+g8196:
+  if (_trace) printf("g8196:\n");
 
-g8193:
-  if (_trace) printf("g8193:\n");
+g8191:
+  if (_trace) printf("g8191:\n");
   goto NEXTINSTRUCTION;
 
 unwindillegalcontinuation:
@@ -3420,7 +3420,7 @@ cpwriteexc:
 
 getrpcc:
   if (_trace) printf("getrpcc:\n");
-  goto *ra; /* ret */
+  goto *(void *)ra; /* ret */
 
 /* end GetRPCC */
 /* start SpinWheels */
@@ -3436,7 +3436,7 @@ spinwheelaxis:
   arg1 = arg1 + -1;
   if ((s64)arg1 > 0)
     goto spinwheelaxis;
-  goto *ra; /* ret */
+  goto *(void *)ra; /* ret */
 
 /* end SpinWheels */
   /* Fin. */

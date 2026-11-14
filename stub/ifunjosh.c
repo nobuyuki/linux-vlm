@@ -20,8 +20,8 @@ DoDereferenceIM:
   /* sign extend the byte argument. */
   arg2 = arg2 << 56;
 
-g8930:
-  if (_trace) printf("g8930:\n");
+g8928:
+  if (_trace) printf("g8928:\n");
   /* Rest of sign extension */
   arg2 = (s64)arg2 >> 56;
   *(u32 *)&processor->immediate_arg = arg2;
@@ -69,35 +69,38 @@ begindodereference:
   t1 = arg2 & 63;
   t2 = (t1 == Type_OneQForward) ? 1 : 0;
 
+g8923:
+  if (_trace) printf("g8923:\n");
+  if (t2 != 0)
+    goto g8919;
+  t2 = (t1 == Type_ElementForward) ? 1 : 0;
+
+g8924:
+  if (_trace) printf("g8924:\n");
+  if (t2 != 0)
+    goto g8919;
+  t2 = (t1 == Type_HeaderForward) ? 1 : 0;
+
 g8925:
   if (_trace) printf("g8925:\n");
   if (t2 != 0)
-    goto g8921;
-  t2 = (t1 == Type_ElementForward) ? 1 : 0;
+    goto g8919;
+  t2 = (t1 == Type_ExternalValueCellPointer) ? 1 : 0;
 
 g8926:
   if (_trace) printf("g8926:\n");
-  if (t2 != 0)
-    goto g8921;
-  t2 = (t1 == Type_HeaderForward) ? 1 : 0;
-
-g8927:
-  if (_trace) printf("g8927:\n");
-  if (t2 != 0)
-    goto g8921;
-  t2 = (t1 == Type_ExternalValueCellPointer) ? 1 : 0;
-
-g8928:
-  if (_trace) printf("g8928:\n");
   if (t2 == 0)
-    goto g8908;
+    goto g8906;
 
-g8921:
-  if (_trace) printf("g8921:\n");
-  /* Here if argument (TypeOneQForward TypeElementForward TypeHeaderForward TypeExternalValueCellPointer) */
+g8919:
+  if (_trace) printf("g8919:\n");
+  /* 
+Here if argument 
+(TypeOneQForward TypeElementForward TypeHeaderForward
+ TypeExternalValueCellPointer) */
   /* Memory Read Internal */
 
-g8909:
+g8907:
   /* Base of stack cache */
   t5 = *(u64 *)&(processor->stackcachebasevma);
   t7 = arg1 + ivory;
@@ -112,16 +115,16 @@ g8909:
   t3 = *(s32 *)t3;
   t4 = (u8)(t4 >> ((t7&7)*8));
   if (t6 != 0)
-    goto g8911;
+    goto g8909;
 
-g8910:
+g8908:
   t7 = zero + 240;
   t8 = t8 >> (t4 & 63);
   t7 = t7 >> (t4 & 63);
   if (t8 & 1)
-    goto g8913;
+    goto g8911;
 
-g8920:
+g8918:
   /* set CDR-NEXT */
   t5 = t4 & 63;
   *(u32 *)(iSP + 8) = t3;
@@ -130,14 +133,14 @@ g8920:
   iSP = iSP + 8;
   goto NEXTINSTRUCTION;
 
-g8908:
-  if (_trace) printf("g8908:\n");
+g8906:
+  if (_trace) printf("g8906:\n");
   t2 = (t1 == Type_LogicVariable) ? 1 : 0;
 
-g8929:
-  if (_trace) printf("g8929:\n");
+g8927:
+  if (_trace) printf("g8927:\n");
   if (t2 == 0)
-    goto g8922;
+    goto g8920;
   /* Here if argument TypeLogicVariable */
   t5 = Type_ExternalValueCellPointer;
   *(u32 *)(iSP + 8) = arg1;
@@ -146,8 +149,8 @@ g8929:
   iSP = iSP + 8;
   goto NEXTINSTRUCTION;
 
-g8922:
-  if (_trace) printf("g8922:\n");
+g8920:
+  if (_trace) printf("g8920:\n");
   /* Here for all other cases */
   /* set CDR-NEXT */
   t5 = arg2 & 63;
@@ -157,29 +160,29 @@ g8922:
   iSP = iSP + 8;
   goto NEXTINSTRUCTION;
 
-g8907:
-  if (_trace) printf("g8907:\n");
+g8905:
+  if (_trace) printf("g8905:\n");
 
-g8911:
-  if (_trace) printf("g8911:\n");
+g8909:
+  if (_trace) printf("g8909:\n");
   t6 = *(u64 *)&(processor->stackcachedata);
   /* reconstruct SCA */
   t5 = (t5 * 8) + t6;
   t3 = *(s32 *)t5;
   /* Read from stack cache */
   t4 = *(s32 *)(t5 + 4);
-  goto g8910;
+  goto g8908;
 
-g8913:
-  if (_trace) printf("g8913:\n");
+g8911:
+  if (_trace) printf("g8911:\n");
   if ((t7 & 1) == 0)
-    goto g8912;
+    goto g8910;
   /* Do the indirect thing */
   arg1 = (u32)t3;
-  goto g8909;
+  goto g8907;
 
-g8912:
-  if (_trace) printf("g8912:\n");
+g8910:
+  if (_trace) printf("g8910:\n");
   /* Load the memory action table for cycle */
   t8 = *(u64 *)&(processor->dataread);
   /* TagType. */
@@ -192,26 +195,26 @@ g8912:
   /* Get the memory action */
   t8 = *(s32 *)t7;
 
-g8917:
-  if (_trace) printf("g8917:\n");
+g8915:
+  if (_trace) printf("g8915:\n");
   t7 = t8 & MemoryActionTransform;
   if (t7 == 0)
-    goto g8916;
+    goto g8914;
   t4 = t4 & ~63L;
   t4 = t4 | Type_ExternalValueCellPointer;
-  goto g8920;
+  goto g8918;
 #ifndef MINIMA
 
-g8916:
+g8914:
 #endif
 #ifdef MINIMA
 
-g8916:
-  if (_trace) printf("g8916:\n");
+g8914:
+  if (_trace) printf("g8914:\n");
   t7 = t8 & MemoryActionBinding;
   t6 = *(u64 *)&(processor->dbcmask);
   if (t7 == 0)
-    goto g8915;
+    goto g8913;
   t5 = arg1 << 1;
   t7 = *(u64 *)&(processor->dbcbase);
   /* Hash index */
@@ -230,17 +233,17 @@ g8916:
   t7 = (s32)arg1 - (s32)t5;
   /* Trap on miss */
   if (t7 != 0)
-    goto g8919;
+    goto g8917;
   /* Extract the pointer, and indirect */
   arg1 = (u32)t3;
-  goto g8909;
+  goto g8907;
 
-g8919:
-  if (_trace) printf("g8919:\n");
+g8917:
+  if (_trace) printf("g8917:\n");
   goto dbcachemisstrap;
 #endif
 
-g8915:
+g8913:
   /* Perform memory action */
   arg1 = t8;
   arg2 = 0;
@@ -264,8 +267,8 @@ DoUnifyIM:
   /* sign extend the byte argument. */
   arg2 = arg2 << 56;
 
-g8931:
-  if (_trace) printf("g8931:\n");
+g8929:
+  if (_trace) printf("g8929:\n");
   /* Rest of sign extension */
   arg2 = (s64)arg2 >> 56;
   *(u32 *)&processor->immediate_arg = arg2;
@@ -431,8 +434,8 @@ DoPushGlobalLogicVariableIM:
   /* sign extend the byte argument. */
   arg2 = arg2 << 56;
 
-g8948:
-  if (_trace) printf("g8948:\n");
+g8946:
+  if (_trace) printf("g8946:\n");
   /* Rest of sign extension */
   arg2 = (s64)arg2 >> 56;
   *(u32 *)&processor->immediate_arg = arg2;
@@ -483,7 +486,7 @@ begindopushgloballogicvariable:
   iSP = iSP + 8;
   /* Memory Read Internal */
 
-g8933:
+g8931:
   /* Base of stack cache */
   t6 = *(u64 *)&(processor->stackcachebasevma);
   t8 = t1 + ivory;
@@ -498,16 +501,16 @@ g8933:
   t5 = *(s32 *)t5;
   t4 = (u8)(t4 >> ((t8&7)*8));
   if (t7 != 0)
-    goto g8935;
+    goto g8933;
 
-g8934:
+g8932:
   t8 = zero + 240;
   t9 = t9 >> (t4 & 63);
   t8 = t8 >> (t4 & 63);
   if (t9 & 1)
-    goto g8937;
+    goto g8935;
 
-g8943:
+g8941:
   /* Merge cdr-code */
   t5 = t3 & 63;
   t4 = t4 & 192;
@@ -524,28 +527,28 @@ g8943:
   t7 = (t4 & 0xff) << ((t6&7)*8);
   t8 = t8 & ~(0xffL << (t6&7)*8);
 
-g8946:
-  if (_trace) printf("g8946:\n");
+g8944:
+  if (_trace) printf("g8944:\n");
   t8 = t8 | t7;
   STQ_U(t6, t8);
   *(u32 *)t5 = t1;
   /* J. if in cache */
   if (t9 != 0)
-    goto g8945;
+    goto g8943;
 
-g8944:
+g8942:
   /* Increment the structure-stack-pointer */
   t2 = t1 + 1;
   /* Set the structure stack pointer */
   *(u32 *)&processor->bar2 = t2;
   goto NEXTINSTRUCTION;
 
-g8945:
-  if (_trace) printf("g8945:\n");
+g8943:
+  if (_trace) printf("g8943:\n");
   t7 = *(u64 *)&(processor->stackcachebasevma);
 
-g8947:
-  if (_trace) printf("g8947:\n");
+g8945:
+  if (_trace) printf("g8945:\n");
   t6 = *(u64 *)&(processor->stackcachedata);
   /* Stack cache offset */
   t7 = t1 - t7;
@@ -555,28 +558,28 @@ g8947:
   *(u32 *)t6 = t1;
   /* write the stack cache */
   *(u32 *)(t6 + 4) = t4;
-  goto g8944;
+  goto g8942;
 
-g8935:
-  if (_trace) printf("g8935:\n");
+g8933:
+  if (_trace) printf("g8933:\n");
   t7 = *(u64 *)&(processor->stackcachedata);
   /* reconstruct SCA */
   t6 = (t6 * 8) + t7;
   t5 = *(s32 *)t6;
   /* Read from stack cache */
   t4 = *(s32 *)(t6 + 4);
-  goto g8934;
+  goto g8932;
 
-g8937:
-  if (_trace) printf("g8937:\n");
+g8935:
+  if (_trace) printf("g8935:\n");
   if ((t8 & 1) == 0)
-    goto g8936;
+    goto g8934;
   /* Do the indirect thing */
   t1 = (u32)t5;
-  goto g8933;
+  goto g8931;
 
-g8936:
-  if (_trace) printf("g8936:\n");
+g8934:
+  if (_trace) printf("g8934:\n");
   /* Load the memory action table for cycle */
   t9 = *(u64 *)&(processor->datawrite);
   /* TagType. */
@@ -590,16 +593,16 @@ g8936:
   t9 = *(s32 *)t8;
 #ifndef MINIMA
 
-g8940:
+g8938:
 #endif
 #ifdef MINIMA
 
-g8940:
-  if (_trace) printf("g8940:\n");
+g8938:
+  if (_trace) printf("g8938:\n");
   t8 = t9 & MemoryActionBinding;
   t7 = *(u64 *)&(processor->dbcmask);
   if (t8 == 0)
-    goto g8939;
+    goto g8937;
   t6 = t1 << 1;
   t8 = *(u64 *)&(processor->dbcbase);
   /* Hash index */
@@ -618,17 +621,17 @@ g8940:
   t8 = (s32)t1 - (s32)t6;
   /* Trap on miss */
   if (t8 != 0)
-    goto g8942;
+    goto g8940;
   /* Extract the pointer, and indirect */
   t1 = (u32)t5;
-  goto g8933;
+  goto g8931;
 
-g8942:
-  if (_trace) printf("g8942:\n");
+g8940:
+  if (_trace) printf("g8940:\n");
   goto dbcachemisstrap;
 #endif
 
-g8939:
+g8937:
   /* Perform memory action */
   arg1 = t9;
   arg2 = 1;
@@ -652,8 +655,8 @@ DoLogicTailTestIM:
   /* sign extend the byte argument. */
   arg2 = arg2 << 56;
 
-g8958:
-  if (_trace) printf("g8958:\n");
+g8956:
+  if (_trace) printf("g8956:\n");
   /* Rest of sign extension */
   arg2 = (s64)arg2 >> 56;
   *(u32 *)&processor->immediate_arg = arg2;
@@ -700,11 +703,41 @@ begindologictailtest:
   t1 = arg2 & 63;
   t2 = (t1 == Type_List) ? 1 : 0;
 
+g8953:
+  if (_trace) printf("g8953:\n");
+  if (t2 == 0)
+    goto g8948;
+  /* Here if argument TypeList */
+  t3 = *(u64 *)&(processor->niladdress);
+  /* push the data */
+  *(u64 *)(iSP + 8) = t3;
+  iSP = iSP + 8;
+  goto NEXTINSTRUCTION;
+
+g8948:
+  if (_trace) printf("g8948:\n");
+  t2 = (t1 == Type_ExternalValueCellPointer) ? 1 : 0;
+
+g8954:
+  if (_trace) printf("g8954:\n");
+  if (t2 == 0)
+    goto g8949;
+  /* Here if argument TypeExternalValueCellPointer */
+  t3 = *(u64 *)&(processor->taddress);
+  /* push the data */
+  *(u64 *)(iSP + 8) = t3;
+  iSP = iSP + 8;
+  goto NEXTINSTRUCTION;
+
+g8949:
+  if (_trace) printf("g8949:\n");
+  t2 = (t1 == Type_ListInstance) ? 1 : 0;
+
 g8955:
   if (_trace) printf("g8955:\n");
   if (t2 == 0)
     goto g8950;
-  /* Here if argument TypeList */
+  /* Here if argument TypeListInstance */
   t3 = *(u64 *)&(processor->niladdress);
   /* push the data */
   *(u64 *)(iSP + 8) = t3;
@@ -713,36 +746,6 @@ g8955:
 
 g8950:
   if (_trace) printf("g8950:\n");
-  t2 = (t1 == Type_ExternalValueCellPointer) ? 1 : 0;
-
-g8956:
-  if (_trace) printf("g8956:\n");
-  if (t2 == 0)
-    goto g8951;
-  /* Here if argument TypeExternalValueCellPointer */
-  t3 = *(u64 *)&(processor->taddress);
-  /* push the data */
-  *(u64 *)(iSP + 8) = t3;
-  iSP = iSP + 8;
-  goto NEXTINSTRUCTION;
-
-g8951:
-  if (_trace) printf("g8951:\n");
-  t2 = (t1 == Type_ListInstance) ? 1 : 0;
-
-g8957:
-  if (_trace) printf("g8957:\n");
-  if (t2 == 0)
-    goto g8952;
-  /* Here if argument TypeListInstance */
-  t3 = *(u64 *)&(processor->niladdress);
-  /* push the data */
-  *(u64 *)(iSP + 8) = t3;
-  iSP = iSP + 8;
-  goto NEXTINSTRUCTION;
-
-g8952:
-  if (_trace) printf("g8952:\n");
   /* Here for all other cases */
   /* arg6 = tag to dispatch on */
   arg6 = t2;
@@ -754,8 +757,8 @@ g8952:
   arg4 = 0;
   goto exception;
 
-g8949:
-  if (_trace) printf("g8949:\n");
+g8947:
+  if (_trace) printf("g8947:\n");
 
 /* end DoLogicTailTest */
   /* End of Halfword operand from stack instruction - DoLogicTailTest */
