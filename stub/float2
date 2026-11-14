@@ -277,9 +277,11 @@ static inline __attribute__((always_inline)) u64 _CVTTQ(int dr, int rv2, u64 v2)
   fregstate[dr] = FPS_Q;
   u.l = v2;
 #ifdef LOUD
-  if (subtrace) printf("_CVTTQ %p %g %p -> %p\n", (void *)v2, u.d, (void *)u.l, (void *)(u64)u.d);
+  if (subtrace) printf("_CVTTQ %p %g %p -> %p\n", (void *)v2, u.d, (void *)u.l, (void *)(u64)(s64)u.d);
 #endif
-  return (u64)(u.d);
+  /* signed, as the Alpha's cvttq: a negative double cast straight to u64
+     is undefined, and 0 on arm64 */
+  return (u64)(s64)(u.d);
 }
 
 static inline __attribute__((always_inline)) u64 _CVTTQVM(int dr, int rv2, u64 v2)
