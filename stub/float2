@@ -22,7 +22,7 @@ enum {
 #define STS(d, rn, r) *d = _STS(rn, r);
 #define STT(d, rn, r) *d = _STT(rn, r);
 
-inline u64
+static inline __attribute__((always_inline)) u64
 _LDS(int regnum, u64/*u32*/ v)
 {
   fregstate[regnum] = FPS_LOADS;
@@ -30,14 +30,14 @@ _LDS(int regnum, u64/*u32*/ v)
   return v;
 }
 
-inline u64
+static inline __attribute__((always_inline)) u64
 _LDT(int regnum, u64 v)
 {
   fregstate[regnum] = FPS_LOADT;
   return v;
 }
 
-inline u64/*u32*/
+static inline __attribute__((always_inline)) u64/*u32*/
 _STS(int regnum, u64 v)
 {
   if (fregstate[regnum] != FPS_L &&
@@ -49,7 +49,7 @@ _STS(int regnum, u64 v)
   return v;
 }
 
-inline u64
+static inline __attribute__((always_inline)) u64
 _STT(int regnum, u64 v)
 {
   if (fregstate[regnum] > FPS_T) {
@@ -58,7 +58,7 @@ _STT(int regnum, u64 v)
   return v;
 }
 
-inline float fixsfloat(int r, u64 v)
+static inline __attribute__((always_inline)) float fixsfloat(int r, u64 v)
 {
 #if 1
   union {
@@ -114,7 +114,7 @@ printf("fixsfloat: assuming T f%d %p(%d)\n", r, (void *)v, fregstate[r]);
 #endif
 }
 
-inline double fixtfloat(int r, u64 v)
+static inline __attribute__((always_inline)) double fixtfloat(int r, u64 v)
 {
 #if 1
   union {
@@ -172,7 +172,7 @@ while (1);
 
 #define CPYSN(dr, d, sr1, s1, sr2, s2) d = _CPYSN(dr, sr1, s1, sr2, s2)
 
-inline u64 _CPYSN(int rd, int ra, u64 a, int rb, u64 b)
+static inline __attribute__((always_inline)) u64 _CPYSN(int rd, int ra, u64 a, int rb, u64 b)
 {
   union {
     double d;
@@ -212,7 +212,7 @@ inline u64 _CPYSN(int rd, int ra, u64 a, int rb, u64 b)
 
 //#define LOUD
 
-inline u64 _CVTLQ(int dr, int rv2, u64 v2)
+static inline __attribute__((always_inline)) u64 _CVTLQ(int dr, int rv2, u64 v2)
 {
   if (fregstate[rv2] != FPS_L && fregstate[rv2] != FPS_LOADS) {
     printf("_CVTLQ: %p(%d)\n", (void *)v2, fregstate[rv2]);
@@ -224,7 +224,7 @@ inline u64 _CVTLQ(int dr, int rv2, u64 v2)
   return (int)v2;
 }
 
-inline u64 _CVTQL(int dr, int rv2, u64 v2)
+static inline __attribute__((always_inline)) u64 _CVTQL(int dr, int rv2, u64 v2)
 {
   u64 l;
   l = (int)v2;
@@ -232,7 +232,7 @@ inline u64 _CVTQL(int dr, int rv2, u64 v2)
   return l;
 }
 
-inline u64 _CVTQS(int dr, int rv2, u64 v2)
+static inline __attribute__((always_inline)) u64 _CVTQS(int dr, int rv2, u64 v2)
 {
   union {
     float f;
@@ -246,7 +246,7 @@ inline u64 _CVTQS(int dr, int rv2, u64 v2)
   return u.l;
 }
 
-inline u64 _CVTQT(int dr, int rv2, u64 v2)
+static inline __attribute__((always_inline)) u64 _CVTQT(int dr, int rv2, u64 v2)
 {
   union {
     double d;
@@ -265,7 +265,7 @@ inline u64 _CVTQT(int dr, int rv2, u64 v2)
   return u.l;
 }
 
-inline u64 _CVTTQ(int dr, int rv2, u64 v2)
+static inline __attribute__((always_inline)) u64 _CVTTQ(int dr, int rv2, u64 v2)
 {
   union {
     double d;
@@ -282,7 +282,7 @@ inline u64 _CVTTQ(int dr, int rv2, u64 v2)
   return (u64)(u.d);
 }
 
-inline inline u64 _CVTTQVM(int dr, int rv2, u64 v2)
+static inline __attribute__((always_inline)) u64 _CVTTQVM(int dr, int rv2, u64 v2)
 {
   union {
     double d;
@@ -301,7 +301,7 @@ if (u.d < 0.0) u.d -= 0.5;
   return (long)u.d;
 }
 
-inline u64 _CVTTS(int dr, int rv2, u64 v2)
+static inline __attribute__((always_inline)) u64 _CVTTS(int dr, int rv2, u64 v2)
 {
   union {
     double d;
@@ -330,12 +330,12 @@ inline u64 _CVTTS(int dr, int rv2, u64 v2)
   return (u64)u2.i;
 }
 
-inline double FLTU64(int rv, u64 v)
+static inline __attribute__((always_inline)) double FLTU64(int rv, u64 v)
 {
   return fixtfloat(rv, v);
 }
 
-inline u64 U64FLTT(double v)
+static inline __attribute__((always_inline)) u64 U64FLTT(double v)
 {
   union {
     double d;
@@ -345,7 +345,7 @@ inline u64 U64FLTT(double v)
   return u.l;
 }
 
-inline u64 U64FLTS(float v)
+static inline __attribute__((always_inline)) u64 U64FLTS(float v)
 {
   union {
     float f;
@@ -366,7 +366,7 @@ inline u64 U64FLTS(float v)
 #define MULT(dr, d, sr1, s1, sr2, s2) d = _MULT(dr, sr1, s1, sr2, s2)
 #define DIVT(dr, d, sr1, s1, sr2, s2) d = _DIVT(dr, sr1, s1, sr2, s2)
 
-inline u64 _ADDS(int rd, int ra, u64 a, int rb, u64 b)
+static inline __attribute__((always_inline)) u64 _ADDS(int rd, int ra, u64 a, int rb, u64 b)
 {
   float fa, fb;
   fa = fixsfloat(ra, a);
@@ -379,7 +379,7 @@ inline u64 _ADDS(int rd, int ra, u64 a, int rb, u64 b)
   return U64FLTS(fa + fb);
 }
 
-inline u64 _ADDT(int rd, int ra, u64 a, int rb, u64 b)
+static inline __attribute__((always_inline)) u64 _ADDT(int rd, int ra, u64 a, int rb, u64 b)
 {
   double fa, fb;
   fa = fixtfloat(ra, a);
@@ -392,7 +392,7 @@ inline u64 _ADDT(int rd, int ra, u64 a, int rb, u64 b)
   return U64FLTT(fa + fb);
 }
 
-inline u64 _SUBS(int rd, int ra, u64 a, int rb, u64 b)
+static inline __attribute__((always_inline)) u64 _SUBS(int rd, int ra, u64 a, int rb, u64 b)
 {
   float fa, fb;
   fa = fixsfloat(ra, a);
@@ -405,7 +405,7 @@ inline u64 _SUBS(int rd, int ra, u64 a, int rb, u64 b)
   return U64FLTS(fa - fb);
 }
 
-inline u64 _SUBT(int rd, int ra, u64 a, int rb, u64 b)
+static inline __attribute__((always_inline)) u64 _SUBT(int rd, int ra, u64 a, int rb, u64 b)
 {
   double fa, fb;
   fa = fixtfloat(ra, a);
@@ -418,7 +418,7 @@ inline u64 _SUBT(int rd, int ra, u64 a, int rb, u64 b)
   return U64FLTT(fa - fb);
 }
 
-inline u64 _MULS(int rd, int ra, u64 a, int rb, u64 b)
+static inline __attribute__((always_inline)) u64 _MULS(int rd, int ra, u64 a, int rb, u64 b)
 {
   float fa, fb;
   fa = fixsfloat(ra, a);
@@ -431,7 +431,7 @@ inline u64 _MULS(int rd, int ra, u64 a, int rb, u64 b)
   return U64FLTS(fa * fb);
 }
 
-inline u64 _MULT(int rd, int ra, u64 a, int rb, u64 b)
+static inline __attribute__((always_inline)) u64 _MULT(int rd, int ra, u64 a, int rb, u64 b)
 {
   double fa, fb;
   fa = fixtfloat(ra, a);
@@ -444,7 +444,7 @@ inline u64 _MULT(int rd, int ra, u64 a, int rb, u64 b)
   return U64FLTT(fa * fb);
 }
 
-inline u64 _DIVS(int rd, int ra, u64 a, int rb, u64 b)
+static inline __attribute__((always_inline)) u64 _DIVS(int rd, int ra, u64 a, int rb, u64 b)
 {
   float fa, fb;
   fa = fixsfloat(ra, a);
@@ -457,7 +457,7 @@ inline u64 _DIVS(int rd, int ra, u64 a, int rb, u64 b)
   return U64FLTS(fa / fb);
 }
 
-inline u64 _DIVT(int rd, int ra, u64 a, int rb, u64 b)
+static inline __attribute__((always_inline)) u64 _DIVT(int rd, int ra, u64 a, int rb, u64 b)
 {
   double fa, fb;
   fa = fixtfloat(ra, a);
