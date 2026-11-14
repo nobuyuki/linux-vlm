@@ -1302,6 +1302,12 @@
 (defconstant |coprocessorregister|$k-|unixcrypt| 655)
 (defconstant |CoprocessorRegisterUnixCrypt| 655)
 
+(defconstant |coprocessorregister|$k-|hosttimezone| 656)
+(defconstant |CoprocessorRegisterHostTimezone| 656)
+
+(defconstant |coprocessorregister|$k-|hosttimezonename| 657)
+(defconstant |CoprocessorRegisterHostTimezoneName| 657)
+
 (defconstant |address|$k-nil 4161016320)
 (defconstant |AddressNIL| 4161016320)
 

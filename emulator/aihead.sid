@@ -466,7 +466,9 @@
   (|AttachDiskChannel| #o1214)
   (|GrowDiskPartition| #o1215)
   (|DetachDiskChannel| #o1216)
-  (|UnixCrypt| #o1217))
+  (|UnixCrypt| #o1217)
+  (|HostTimezone| #o1220)
+  (|HostTimezoneName| #o1221))
 
 (define-values |Address|
   (|NIL| #xf8041200)

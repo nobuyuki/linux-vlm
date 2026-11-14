@@ -22,6 +22,42 @@
 #include "utilities.h"
 
 
+/* The host's time zone, for Genera to follow whatever TZ the emulator runs
+   with: write CoprocessorRegister_HostTimezone with a moment, in minutes since
+   1900-01-01 UT; then reading it gives the host's offset from UT at that moment,
+   in minutes east, and reading CoprocessorRegister_HostTimezoneName gives the
+   characters of the zone's abbreviation then, one per read, and 0 after the
+   last (starting over after that).  Until written, the moment is now. */
+
+static int hostTZOffset = 0;
+static char hostTZName[16] = "";
+static int hostTZNameIndex = 0;
+
+static void HostTimezoneAt (time_t moment)
+{
+  struct tm local;
+  if (localtime_r (&moment, &local)) {
+    hostTZOffset = (int) (local.tm_gmtoff / 60);
+    snprintf (hostTZName, sizeof (hostTZName), "%s", local.tm_zone ? local.tm_zone : "");
+  }
+  else {
+    hostTZOffset = 0;
+    hostTZName[0] = 0;
+  }
+  hostTZNameIndex = 0;
+}
+
+static int hostTZKnown = 0;
+
+static void HostTimezoneNow ()
+{
+  if (!hostTZKnown) {
+    HostTimezoneAt (time (NULL));
+    hostTZKnown = 1;
+  }
+}
+
+
 /* CoprocessorWrite Protocol:
    CoprocessorWrite is called from the interpreter when a %COPROCESSOR-WRITE
    instruction is executed.  The function should return TRUE if it recognizes 
@@ -147,6 +183,12 @@ int CoprocessorWrite (unsigned int operand, LispObj value)
 
     case CoprocessorRegister_UnixCrypt:
 	    UnixCrypt ((UnixCryptRequest*) MapVirtualAddressData (LispObjData (value)));
+      break;
+
+    case CoprocessorRegister_HostTimezone:
+      if (Type_Fixnum != (LispObjTag (value) & 0x3F)) return (FALSE);
+      HostTimezoneAt ((time_t) (int32_t) LispObjData (value) * 60 - (time_t) 2208988800LL);
+      hostTZKnown = 1;
       break;
 
     default:
@@ -299,6 +341,18 @@ LispObj CoprocessorRead (unsigned int operand)
     case CoprocessorRegister_DetachDiskChannel:
       /* This register is write-only ... */
       return (INVALID);
+
+    case CoprocessorRegister_HostTimezone:
+      HostTimezoneNow ();
+      return (MakeLispObj (Type_Fixnum, (unsigned int) hostTZOffset));
+
+    case CoprocessorRegister_HostTimezoneName:
+      HostTimezoneNow ();
+      {
+	unsigned int c = (unsigned char) hostTZName[hostTZNameIndex];
+	hostTZNameIndex = c ? hostTZNameIndex + 1 : 0;
+	return (MakeLispObj (Type_Fixnum, c));
+      }
 
     default:
       /* Force the interpreter to take an INSTRUCTION-EXCEPTION trap */

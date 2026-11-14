@@ -868,6 +868,10 @@
 
 #define CoprocessorRegister_UnixCrypt 655
 
+#define CoprocessorRegister_HostTimezone 656
+
+#define CoprocessorRegister_HostTimezoneName 657
+
 #define Address_NIL 4161016320
 
 #define Address_T 4161016328
