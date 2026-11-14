@@ -473,11 +473,11 @@ void TerminateLifeSupport ()
 	killSleep.tv_nsec = 250000000;
 	pthread_delay_np (&killSleep);
 
-	if (EmbCommAreaPtr->wakeupSignalSetup)
-	  {
-		pthread_cond_destroy (&EmbCommAreaPtr->wakeupSignal);
-		EmbCommAreaPtr->wakeupSignalSetup = FALSE;
-	  }
+	/* The wakeup signal is not destroyed: we may be running in a signal handler
+	   that interrupted this very thread while it waited on it (an idle Lisp sits
+	   in WaitForLifeSupport), and pthread_cond_destroy does not return while
+	   the condition variable has a waiter.  The process is exiting anyway. */
+	EmbCommAreaPtr->wakeupSignalSetup = FALSE;
 
 	if (EmbCommAreaPtr->wakeupLockSetup)
 	  {
