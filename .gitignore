@@ -1,0 +1,22 @@
+# autotools / configure output
+/autom4te.cache/
+/aclocal.m4
+/config.guess
+/config.sub
+/config.h
+/config.h.in
+/config.log
+/config.status
+/stamp-h1
+/Makefile
+/Makefile.in
+.deps/
+
+# build products
+*.o
+*.a
+/src/genera
+/src/byteswap_world
+
+# local run directory (worlds, debugger, .VLM)
+/run/
