@@ -1828,6 +1828,13 @@
 	 (fixarg arg3))
 	 (setq *do-check-ratquo* t))
 	
+	(X64FIXDIVZERO
+	 (format destination
+		 "  if (((~a) & 63) == Type_Fixnum && ~a == 0) { /* fixnum / 0 */~%    arg5 = 0;~%    arg2 = ~a;~%    goto illegaloperand;~%  }~%"
+		 (fixarg arg1)
+		 (fixarg arg2)
+		 (fixarg arg3)))
+
 	(LIBMFLOOR
 	 (format destination
 		 "  /* use libc function floor for rounding-mode :down */~%")
@@ -1841,6 +1848,11 @@
 		 "    double d = FLTU64(1, ~a) - (c * FLTU64(2, ~a)) ;~%"
 		 (fixarg arg1)
 		 (fixarg arg2))
+	 ;; The Alpha's CVTQL/V trapped when the quotient was not a 32-bit
+	 ;; integer (x/0 = inf, 0/0 = NaN, overflow into bignums); (int)c does
+	 ;; not, so send those to the exception handler like the trap did.
+	 (format destination
+		 "    if (!(c > -2147483649.0 && c < 2147483648.0)) goto arithmeticexception;~%")
 	 (format destination
 		 "    LDS(0, ~a, (int)c);~%"
 		 (fixarg arg4))
@@ -1862,6 +1874,11 @@
 		 "    double d = FLTU64(1, ~a) - (c * FLTU64(2, ~a)) ;~%"
 		 (fixarg arg1)
 		 (fixarg arg2))
+	 ;; The Alpha's CVTQL/V trapped when the quotient was not a 32-bit
+	 ;; integer (x/0 = inf, 0/0 = NaN, overflow into bignums); (int)c does
+	 ;; not, so send those to the exception handler like the trap did.
+	 (format destination
+		 "    if (!(c > -2147483649.0 && c < 2147483648.0)) goto arithmeticexception;~%")
 	 (format destination
 		 "    LDS(0, ~a, (int)c);~%"
 		 (fixarg arg4))
@@ -1883,6 +1900,11 @@
 		 "    double d = FLTU64(1, ~a) - (c * FLTU64(2, ~a)) ;~%"
 		 (fixarg arg1)
 		 (fixarg arg2))
+	 ;; The Alpha's CVTQL/V trapped when the quotient was not a 32-bit
+	 ;; integer (x/0 = inf, 0/0 = NaN, overflow into bignums); (int)c does
+	 ;; not, so send those to the exception handler like the trap did.
+	 (format destination
+		 "    if (!(c > -2147483649.0 && c < 2147483648.0)) goto arithmeticexception;~%")
 	 (format destination
 		 "    LDS(0, ~a, (int)c);~%"
 		 (fixarg arg4))
@@ -1904,6 +1926,11 @@
 		 "    double d = FLTU64(1, ~a) - (c * FLTU64(2, ~a)) ;~%"
 		 (fixarg arg1)
 		 (fixarg arg2))
+	 ;; The Alpha's CVTQL/V trapped when the quotient was not a 32-bit
+	 ;; integer (x/0 = inf, 0/0 = NaN, overflow into bignums); (int)c does
+	 ;; not, so send those to the exception handler like the trap did.
+	 (format destination
+		 "    if (!(c > -2147483649.0 && c < 2147483648.0)) goto arithmeticexception;~%")
 	 (format destination
 		 "    LDS(0, ~a, (int)c);~%"
 		 (fixarg arg4))

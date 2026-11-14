@@ -459,6 +459,17 @@
 	  (BR zero ,ovflow)))
       (label ,done))))
 
+;; The fixnum division instructions divide in floating point, and x/0
+;; would reach the arithmetic trap, whose Lisp handler for two fixnums only
+;; expects most-negative-fixnum / -1 (it returns 2^31). Signal the
+;; divide-by-zero error instead, as Ivory does. :rational leaves it to
+;; the trap: that handler checks for zero itself.
+;; (Same as (illegal-operand divide-by-zero) after a type and zero check,
+;; but without labels, which would renumber every label in the stubs.)
+(defmacro fixnum-divide-by-zero-check (op2-tag op2-data)
+  `((X64FIXDIVZERO ,op2-tag ,op2-data
+		   ,(1+ (position 'divide-by-zero *all-conditions*)))))
+
 (defmacro binary-arithmetic-two-value-division-operation (rounding)
   "Expects op1 and op2 as T floats in F1 and F2, op2-tag in T3 directs
   the conversion of the remainder"
@@ -471,6 +482,7 @@
 	(op2-float-data 'f2)
 	(remainder-float-data 'f3))
     `(
+      (fixnum-divide-by-zero-check ,op2-tag t4)
       ,@(when (eq rounding :rational)
 	  `((CPYSN ,op2-float-data ,op2-float-data ,op2-float-data)))
       ,@(unless (member rounding '(:down :up :truncate :round))
@@ -539,6 +551,8 @@
 	)
     `((type-dispatch ,op2-tag ,temp1 ,temp2
 	(|TypeFixnum|
+	  ,@(unless (eq rounding :rational)
+	      `((fixnum-divide-by-zero-check ,op2-tag ,op2-fix)))
 	  ,@(when (eq rounding :up)
 	      `((CPSYN ,op2-float-data ,op2-float-data ,op2-float-data)))
 	  ,@(unless (eq rounding :rational)

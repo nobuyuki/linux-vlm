@@ -232,7 +232,7 @@
 	  '((CPYS #x020) (CPYSE #x022) (CPYSN #x021)  (FCMOVEQ #x02A)
 	    (FCMOVGE #x02D) (FCMOVGT #x02F) (FCMOVLE #x02E) (FCMOVLT #x02C)
 	    (FCMOVNE #x02B) (MF_FPCR #x025) (MT_FPCR #x024)
-	    (X64RATQUO #x00) (X64EXECTIMES #x00) (LIBMFLOOR #x00)
+	    (X64RATQUO #x00) (X64FIXDIVZERO #x00) (X64EXECTIMES #x00) (LIBMFLOOR #x00)
 	    (LIBMCEIL #x00) (LIBMTRUNC #x00) (LIBMRINT #x00))
 	  do (clos:make-instance 'FP-operate-format-instruction 
 				 :name name :function-code function :class 'UNKNOWN))

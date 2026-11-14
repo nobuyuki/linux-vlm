@@ -778,6 +778,11 @@ g7586:
   if (t9 == 0)
     goto g7582;
   /* Here if argument TypeFixnum */
+  if (((t3) & 63) == Type_Fixnum && t4 == 0) { /* fixnum / 0 */
+    arg5 = 0;
+    arg2 = 30;
+    goto illegaloperand;
+  }
   DIVT(0, f0, 1, f1, 2, f2);
   CVTTQVC(0, f0, f31, 0, f0);
   CVTQLV(0, f0, f31, 0, f0);
@@ -1015,11 +1020,17 @@ begindofloor:
   r0 = (u64)&&return0060;
   goto binaryarithmeticdivisionprelude;
 return0060:
+  if (((t3) & 63) == Type_Fixnum && t4 == 0) { /* fixnum / 0 */
+    arg5 = 0;
+    arg2 = 30;
+    goto illegaloperand;
+  }
   /* use libc function floor for rounding-mode :down */
   {
     extern double floor(double);
     double c = floor( FLTU64(1, f1) / FLTU64(2, f2) );
     double d = FLTU64(1, f1) - (c * FLTU64(2, f2)) ;
+    if (!(c > -2147483649.0 && c < 2147483648.0)) goto arithmeticexception;
     LDS(0, f0, (int)c);
     LDT(3, f3, U64FLTT(d));
   }
@@ -1161,11 +1172,17 @@ begindoceiling:
   r0 = (u64)&&return0062;
   goto binaryarithmeticdivisionprelude;
 return0062:
+  if (((t3) & 63) == Type_Fixnum && t4 == 0) { /* fixnum / 0 */
+    arg5 = 0;
+    arg2 = 30;
+    goto illegaloperand;
+  }
   /* use libc function ceil for rounding-mode :up */
   {
     extern double ceil(double);
     double c = ceil( FLTU64(1, f1) / FLTU64(2, f2) );
     double d = FLTU64(1, f1) - (c * FLTU64(2, f2)) ;
+    if (!(c > -2147483649.0 && c < 2147483648.0)) goto arithmeticexception;
     LDS(0, f0, (int)c);
     LDT(3, f3, U64FLTT(d));
   }
@@ -1307,11 +1324,17 @@ begindotruncate:
   r0 = (u64)&&return0064;
   goto binaryarithmeticdivisionprelude;
 return0064:
+  if (((t3) & 63) == Type_Fixnum && t4 == 0) { /* fixnum / 0 */
+    arg5 = 0;
+    arg2 = 30;
+    goto illegaloperand;
+  }
   /* use libc function trunc for rounding-mode :truncate */
   {
     extern double trunc(double);
     double c = trunc( FLTU64(1, f1) / FLTU64(2, f2) );
     double d = FLTU64(1, f1) - (c * FLTU64(2, f2)) ;
+    if (!(c > -2147483649.0 && c < 2147483648.0)) goto arithmeticexception;
     LDS(0, f0, (int)c);
     LDT(3, f3, U64FLTT(d));
   }
@@ -1453,11 +1476,17 @@ begindoround:
   r0 = (u64)&&return0066;
   goto binaryarithmeticdivisionprelude;
 return0066:
+  if (((t3) & 63) == Type_Fixnum && t4 == 0) { /* fixnum / 0 */
+    arg5 = 0;
+    arg2 = 30;
+    goto illegaloperand;
+  }
   /* use libc function rint for rounding-mode :round */
   {
     extern double rint(double);
     double c = rint( FLTU64(1, f1) / FLTU64(2, f2) );
     double d = FLTU64(1, f1) - (c * FLTU64(2, f2)) ;
+    if (!(c > -2147483649.0 && c < 2147483648.0)) goto arithmeticexception;
     LDS(0, f0, (int)c);
     LDT(3, f3, U64FLTT(d));
   }

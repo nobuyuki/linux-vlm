@@ -200,7 +200,10 @@ static inline __attribute__((always_inline)) u64 _CPYSN(int rd, int ra, u64 a, i
 
 #define CVTLQ(dr, d, s1, sr2, s2) d = _CVTLQ(dr, sr2, s2)
 #define CVTQL(dr, d, s1, sr2, s2) d = _CVTQL(dr, sr2, s2)
-#define CVTQLV(dr, d, s1, sr2, s2) d = _CVTQL(dr, sr2, s2)
+/* /V: the Alpha trapped when the quadword did not fit in a longword */
+#define CVTQLV(dr, d, s1, sr2, s2) \
+    do { if ((s64)(s2) != (s64)(s32)(s2)) goto arithmeticexception; \
+         d = _CVTQL(dr, sr2, s2); } while (0)
 #define CVTQS(dr, d, s1, sr2, s2) d = _CVTQS(dr, sr2, s2)
 #define CVTQT(dr, d, s1, sr2, s2) d = _CVTQT(dr, sr2, s2)
 #define CVTTQ(dr, d, s1, sr2, s2) d = _CVTTQ(dr, sr2, s2)
