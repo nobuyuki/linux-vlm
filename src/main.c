@@ -102,6 +102,12 @@ int main (int argc, char** argv)
   EnableIDS = config.enableIDS;
 #endif
 
+  /* Lisp memory is mapped and protected in the Alpha's 8 KB pages; a host
+     with larger pages (some arm64 kernels use 16 KB or 64 KB) cannot do that. */
+  if (getpagesize () > 8192)
+    vpunt (NULL, "This machine's memory pages are %d bytes; the VLM needs pages of"
+           " at most 8192 bytes (on arm64: a kernel with 4 KB pages)", getpagesize ());
+
   TestFunction = config.testFunction;
   Trace = config.tracing.tracePOST;
   InitializeIvoryProcessor (MapVirtualAddressData (0), MapVirtualAddressTag (0));

@@ -37,7 +37,7 @@ Tag *TagSpace = (Tag *)((int64_t)1<<36);		/* 1<<32 bytes of tages */
 /* Data space must be TagSpace*4 for Ivory-based address scheme */
 Integer *DataSpace = (Integer *)((int64_t)1<<38);	/* 4<<32 bytes of data */
 
-#elif defined(OS_LINUX) && defined(ARCH_X86_64)
+#elif defined(OS_LINUX) && (defined(ARCH_X86_64) || defined(ARCH_ARM64))
 Tag *TagSpace = (Tag *)((int64_t)1<<36);		/* 1<<32 bytes of tages */
 /* Data space must be TagSpace*4 for Ivory-based address scheme */
 Integer *DataSpace = (Integer *)((int64_t)1<<38);	/* 4<<32 bytes of data */
@@ -1541,7 +1541,7 @@ void segv_handler (int sigval, register siginfo_t *si, void *uc_p)
   }
 }
 
-#elif defined(OS_LINUX) && defined(ARCH_X86_64)
+#elif defined(OS_LINUX) && (defined(ARCH_X86_64) || defined(ARCH_ARM64))
 
 void segv_handler (int sigval, register siginfo_t *si, void *uc_p)
 {
@@ -1556,7 +1556,7 @@ void segv_handler (int sigval, register siginfo_t *si, void *uc_p)
   if (maybevma >> 32) {
     /* Not a fault in Lisp space */
     vwarn (NULL, "Unexpected SEGV at PC %p on VMA %p",
-	   (void*)uc->uc_mcontext.gregs[REG_RIP],
+	   (void*)UC_PC(uc),
 	   si->si_addr);
     num_calls = backtrace( call_buffer, CALL_SIZE );
     fprintf( stderr, "backtrace returned %d symbols\n", num_calls );
@@ -1571,7 +1571,7 @@ void segv_handler (int sigval, register siginfo_t *si, void *uc_p)
     {
       /* make genera bus-error */
       processor->vma = (uint64_t)vma;
-      uc->uc_mcontext.gregs[REG_RIP] = (uint64_t)DECODEFAULT;
+      UC_PC(uc) = (uint64_t)DECODEFAULT;
       return;
     }
   }
@@ -1623,7 +1623,7 @@ void segv_handler (int sigval, register siginfo_t *si, void *uc_p)
       /* a true fault, advance the pc into the fault handler */
       processor->vma = (uint64_t)vma;
 //printf("RIP = DECODEFAULT #2 (old rip %p)\n", (void *)uc->uc_mcontext.gregs[REG_RIP]);
-      uc->uc_mcontext.gregs[REG_RIP] = (uint64_t)DECODEFAULT;
+      UC_PC(uc) = (uint64_t)DECODEFAULT;
 //printf("RIP = DECODEFAULT #2 (new rip %p)\n", (void *)DECODEFAULT);
   }
 }

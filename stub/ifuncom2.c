@@ -346,13 +346,7 @@ g6711:
   t6 = *(u64 *)&(((CACHELINEP)iCP)->nextpcdata);
   /* compute 64-bit result */
 //  t5 = (u64)((s32)t2 + (s64)(s32)t4); /* addl/v */
-  /* x86_64 replacement for addl/v */
-    asm("movl %k2,%k0 \n\t"
-	"addl %k3,%k0 \n\t"
-	"seto %b1"
-        : "=r"(t5),"=rm"(oflo)
-        : "rm"(t2),"rm"(t4)
-        : "cc");
+  ADDL_V(t5, t2, t4); /* sets oflo, see stub.c */
 //  if (t5 >> 32)
 //    exception();
   t7 = *(u64 *)&(((CACHELINEP)iCP)->nextcp);
@@ -2749,13 +2743,7 @@ g6882:
   t6 = *(u64 *)&(((CACHELINEP)iCP)->nextpcdata);
   /* compute 64-bit result */
 //  t5 = (s64)((s32)t2 - (s64)(s32)t4); /* subl/v */
-  /* x86_64 replacement for subl/v */
-    asm("movl %k2,%k0 \n\t"
-	"subl %k3,%k0 \n\t"
-	"seto %b1"
-        : "=r"(t5),"=rm"(oflo)
-        : "rm"(t2),"rm"(t4)
-        : "cc");
+  SUBL_V(t5, t2, t4); /* sets oflo, see stub.c */
 //  if (t5 >> 32)
 //    exception();
   t7 = *(u64 *)&(((CACHELINEP)iCP)->nextcp);

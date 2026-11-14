@@ -152,8 +152,10 @@ hwdispatch	22	; = T9 (the halfword dispatch table)
 #define fwdispatch	r21
 #define hwdispatch	r22
 
+#if defined(ARCH_X86_64)
 #define rdtscll(val) \
      __asm__ __volatile__ ("rdtsc" : "=A" (val))
+#endif
 
 
 // these need to be in-line for DECODEFAULT to work
@@ -209,6 +211,60 @@ inline u64 CMPBGE(u64 a, u64 b)
 // jj
 
 int8_t oflo;
+
+/* The Alpha's trapping longword arithmetic, as process.lisp emits it.
+   ADDL_V, SUBL_V, MULL_V: r = the 32-bit result, zero-extended; oflo is set
+   when it overflowed (CHECK_OFLO then traps).
+   RATQUO: q = a / b and rem = a % b, 32-bit signed; division by zero (and
+   the one overflow, most negative / -1) goes to arithmeticexception. On x86_64
+   idivl raises SIGFPE for those and fpe_handler sends it to arex, which runs
+   into arithmeticexception; elsewhere integer division does not trap. */
+#if defined(ARCH_X86_64)
+#define ADDL_V(r, a, b) \
+    asm("movl %k2,%k0 \n\t" \
+	"addl %k3,%k0 \n\t" \
+	"seto %b1" \
+        : "=r"(r),"=rm"(oflo) \
+        : "rm"(a),"rm"(b) \
+        : "cc")
+#define SUBL_V(r, a, b) \
+    asm("movl %k2,%k0 \n\t" \
+	"subl %k3,%k0 \n\t" \
+	"seto %b1" \
+        : "=r"(r),"=rm"(oflo) \
+        : "rm"(a),"rm"(b) \
+        : "cc")
+#define MULL_V(r, a, b) \
+    asm("movl %k2,%k0 \n\t" \
+	"imull %k3,%k0 \n\t" \
+	"seto %b1" \
+        : "=r"(r),"=rm"(oflo) \
+        : "rm"(a),"rm"(b) \
+        : "cc")
+#define RATQUO(q, rem, a, b) \
+    asm("movl %k2,%%eax \n\t"       /* get arg1 into res */ \
+        "cdq \n\t"                  /* sign extend into edx:eax */ \
+        "idivl %k3 \n\t"            /* divide by arg2 */ \
+        "movl %%eax,%k0 \n\t"       /* result into q */ \
+        "movl %%edx,%k1"            /* remainder into rem */ \
+        : "=mr"(q),"=rm"(rem) \
+        : "rm"(a),"rm"(b) \
+        : "rax", "rdx", "cc")
+#else
+#define LONG_V(op, r, a, b) \
+    do { s32 _lv; \
+         oflo = __builtin_##op##_overflow((s32)(a), (s32)(b), &_lv); \
+         (r) = (u32)_lv; } while (0)
+#define ADDL_V(r, a, b) LONG_V(add, r, a, b)
+#define SUBL_V(r, a, b) LONG_V(sub, r, a, b)
+#define MULL_V(r, a, b) LONG_V(mul, r, a, b)
+#define RATQUO(q, rem, a, b) \
+    do { s32 _ra = (s32)(a), _rb = (s32)(b); \
+         if (_rb == 0 || (_ra == INT32_MIN && _rb == -1)) \
+           goto arithmeticexception; \
+         (q) = (u32)(_ra / _rb); \
+         (rem) = _ra % _rb; } while (0)
+#endif
 
 void exception(int which, u64 r)
 {
@@ -541,7 +597,11 @@ int iInterpret (PROCESSORSTATEP ivoryp) {
   int im1 ;
 
   arexp = &&arex;
+#if defined(ARCH_X86_64)
   asm("movq %%rsp,%0" : "=m"(iipsp) : : );
+#elif defined(ARCH_ARM64)
+  { uint64_t _sp; asm("mov %0, sp" : "=r"(_sp)); iipsp = _sp; }
+#endif
   //
 #include "dispatch"
 #ifdef STATISTICS

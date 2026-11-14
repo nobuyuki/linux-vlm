@@ -34,8 +34,20 @@ typedef struct ucontext ucontext_t;
 #define ARCH_PPC64
 #elif defined(__x86_64__)
 #define ARCH_X86_64
+#elif defined(__aarch64__)
+#define ARCH_ARM64
 #else
 #error "Unsupported processor architecture"
+#endif
+
+/* The interrupted program counter and stack pointer in a signal handler's
+   ucontext_t, for the 64-bit little-endian Linux ports. */
+#if defined(OS_LINUX) && defined(ARCH_X86_64)
+#define UC_PC(uc) (((ucontext_t *)(uc))->uc_mcontext.gregs[REG_RIP])
+#define UC_SP(uc) (((ucontext_t *)(uc))->uc_mcontext.gregs[REG_RSP])
+#elif defined(OS_LINUX) && defined(ARCH_ARM64)
+#define UC_PC(uc) (((ucontext_t *)(uc))->uc_mcontext.pc)
+#define UC_SP(uc) (((ucontext_t *)(uc))->uc_mcontext.sp)
 #endif
 
 #include <stddef.h>

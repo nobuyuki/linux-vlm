@@ -233,7 +233,7 @@ printf("device %s\n", interface->device);
 		if (strncmp (interface->device, ifc->ifc_req[i].ifr_name, IFNAMSIZ) == 0)
 		  {
 			p->hostPrimaryProtocol = ETHERTYPE_IP;
-#ifdef ARCH_X86_64
+#if defined(ARCH_X86_64) || defined(ARCH_ARM64)
 			p->hostPrimaryAddress
 			  = ntohl(((struct sockaddr_in *)&ifc->ifc_req[i].ifr_addr)->sin_addr.s_addr);
 #else
@@ -370,7 +370,7 @@ printf("attach filter\n");
 
 	p->status = 0;
 	p->guestPrimaryProtocol = interface->myProtocol;
-#ifdef ARCH_X86_64
+#if defined(ARCH_X86_64) || defined(ARCH_ARM64)
 	p->guestPrimaryAddress = interface->myAddress.s_addr;
 #else
 	p->guestPrimaryAddress = htonl (interface->myAddress.s_addr);

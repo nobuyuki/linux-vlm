@@ -1155,16 +1155,8 @@
 		 (fixarg arg1)
 		 (fixarg arg2))
 	 (format destination
-		 "  /* x86_64 replacement for addl/v */~%")
-	 (format destination
-		 "    asm(\"movl %k2,%k0 \\n\\t\"
-	\"addl %k3,%k0 \\n\\t\"
-	\"seto %b1\"
-        : \"=r\"(~a),\"=rm\"(~a)
-        : \"rm\"(~a),\"rm\"(~a)
-        : \"cc\");~%"
+		 "  ADDL_V(~a, ~a, ~a); /* sets oflo, see stub.c */~%"
 	 (fixarg arg3)
-	 "oflo"
 	 (fixarg arg1)
 	 (fixarg arg2))
 	 (setq *do-check-oflo* t)
@@ -1179,16 +1171,8 @@
 		 (fixarg arg1)
 		 (fixarg arg2))
 	 (format destination
-		 "  /* x86_64 replacement for subl/v */~%")
-	 (format destination
-		 "    asm(\"movl %k2,%k0 \\n\\t\"
-	\"subl %k3,%k0 \\n\\t\"
-	\"seto %b1\"
-        : \"=r\"(~a),\"=rm\"(~a)
-        : \"rm\"(~a),\"rm\"(~a)
-        : \"cc\");~%"
+		 "  SUBL_V(~a, ~a, ~a); /* sets oflo, see stub.c */~%"
 	 (fixarg arg3)
-	 "oflo"
 	 (fixarg arg1)
 	 (fixarg arg2))
 	 (format destination "//  if (~A >> 32)~%//    exception();~%"
@@ -1826,16 +1810,8 @@
 		 (fixarg arg1)
 		 (fixarg arg2))
 	 (format destination
-		 "  /* x86_64 replacement for mull/v */~%")
-	 (format destination
-		 "    asm(\"movl %k2,%k0 \\n\\t\"
-	\"imull %k3,%k0 \\n\\t\"
-	\"seto %b1\"
-        : \"=r\"(~a),\"=rm\"(~a)
-        : \"rm\"(~a),\"rm\"(~a)
-        : \"cc\");~%"
+		 "  MULL_V(~a, ~a, ~a); /* sets oflo, see stub.c */~%"
 	 (fixarg arg3)
-	 "oflo"
 	 (fixarg arg1)
 	 (fixarg arg2))
 	 (setq *do-check-oflo* t)
@@ -1845,16 +1821,7 @@
 	(X64RATQUO
 	 (check-comment arg4)
 	 (format destination
-		 "  /* x86_64 replacement for fixnum rational quotient */~%")
-	 (format destination
-		 "    asm(\"movl %k2,%%eax \\n\\t\"~36,4T// get arg1 into res
-        \"cdq \\n\\t\"~36,4T// sign extend into edx:eax
-        \"idivl %k3 \\n\\t\"~36,4T// divide by arg2
-        \"movl %%eax,%k0 \\n\\t\"~36,4T// result into f0
-        \"movl %%edx,%k1\"~36,4T// remainder into im1
-        : \"=mr\"(~a),\"=rm\"(~a)~36,4T// %0;res, %1:im1
-        : \"rm\"(~a),\"rm\"(~a)~36,4T// %2:t2, %3:t4
-        : \"rax\", \"rdx\", \"cc\");~36,4T// clobbers eax, edx and cc;~%"
+		 "  RATQUO(~a, ~a, ~a, ~a); /* fixnum rational quotient, see stub.c */~%"
 	 (fixarg arg1)
 	 "im1"
 	 (fixarg arg2)
